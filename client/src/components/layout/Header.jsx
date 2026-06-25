@@ -1,20 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { NotebookPen, Settings } from 'lucide-react';
 import ThemeToggle from '../common/ThemeToggle';
 import SearchBar from '../common/SearchBar';
 
-/**
- * Top application bar.
- * @param {Function} onSearch  forwarded from the parent page when search is active
- */
 function Header({ onSearch }) {
   const navigate = useNavigate();
 
   return (
     <header className="app-header">
       <div className="header-brand">
-        <span className="brand-icon" aria-hidden="true">📝</span>
-        <span className="brand-title">Notes</span>
+        <NotebookPen size={22} className="brand-icon" strokeWidth={1.8} />
+        <span className="brand-title">Notepad</span>
       </div>
 
       <div className="header-search">
@@ -29,7 +26,7 @@ function Header({ onSearch }) {
           title="Settings"
           aria-label="Open settings"
         >
-          ⚙️
+          <Settings size={18} strokeWidth={1.8} />
         </button>
       </div>
     </header>

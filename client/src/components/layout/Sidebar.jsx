@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { FolderPlus, Pencil, Trash2, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { useNotes } from '../../hooks/useNotes';
 import Modal from '../common/Modal';
+import ConfirmModal from '../common/ConfirmModal';
 import Button from '../common/Button';
 import { FOLDER_COLORS } from '../../utils/constants';
 
-function Sidebar() {
+function Sidebar({ collapsed, onToggle }) {
   const {
     folders,
     notes,
@@ -19,6 +21,7 @@ function Sidebar() {
   const [editingFolder, setEditingFolder] = useState(null);
   const [folderName, setFolderName] = useState('');
   const [folderColor, setFolderColor] = useState(FOLDER_COLORS[0]);
+  const [confirmDelete, setConfirmDelete] = useState(null); // { id, name }
 
   function noteCount(folderId) {
     if (folderId === 'all') return notes.length;
@@ -40,11 +43,9 @@ function Sidebar() {
     setModalOpen(true);
   }
 
-  function handleDelete(id, e) {
+  function handleDelete(id, name, e) {
     e.stopPropagation();
-    if (window.confirm('Delete folder? Notes inside will be kept in All Notes.')) {
-      deleteFolder(id);
-    }
+    setConfirmDelete({ id, name });
   }
 
   function handleSubmit(e) {
@@ -66,13 +67,21 @@ function Sidebar() {
   const userFolders = folders.filter((f) => f.id !== 'all');
 
   return (
-    <aside className="sidebar">
+    <>
+      {/* Collapse/expand toggle strip */}
+      <div className="sidebar-toggle-btn">
+        <button onClick={onToggle} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
+      </div>
+
+      <aside className={`sidebar${collapsed ? ' collapsed' : ''}`}>
       {/* All Notes */}
       <button
         className={`folder-item${activeFolder === 'all' ? ' active' : ''}`}
         onClick={() => setActiveFolder('all')}
       >
-        <span className="folder-icon" aria-hidden="true">📋</span>
+        <BookOpen size={15} className="folder-icon" aria-hidden="true" />
         <span className="folder-name">All Notes</span>
         <span className="folder-count">{noteCount('all')}</span>
       </button>
@@ -102,15 +111,15 @@ function Sidebar() {
                   title="Rename folder"
                   aria-label={`Rename ${folder.name}`}
                 >
-                  ✏️
+                  <Pencil size={12} />
                 </button>
                 <button
                   className="icon-btn-sm"
-                  onClick={(e) => handleDelete(folder.id, e)}
+                  onClick={(e) => handleDelete(folder.id, folder.name, e)}
                   title="Delete folder"
                   aria-label={`Delete ${folder.name}`}
                 >
-                  🗑️
+                  <Trash2 size={12} />
                 </button>
               </div>
             </div>
@@ -120,7 +129,8 @@ function Sidebar() {
 
       <div className="sidebar-footer">
         <Button variant="ghost" onClick={openCreate} className="new-folder-btn">
-          + New Folder
+          <FolderPlus size={14} style={{ marginRight: 4 }} />
+          New Folder
         </Button>
       </div>
 
@@ -169,7 +179,19 @@ function Sidebar() {
           </div>
         </form>
       </Modal>
+
+      {/* Delete folder confirmation */}
+      <ConfirmModal
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={() => deleteFolder(confirmDelete.id)}
+        title="Delete Folder?"
+        message={`"${confirmDelete?.name}" will be deleted. Notes inside will be moved to All Notes.`}
+        confirmLabel="Delete"
+        variant="danger"
+      />
     </aside>
+    </>
   );
 }
 

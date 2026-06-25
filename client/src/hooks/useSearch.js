@@ -19,7 +19,11 @@ export function useSearch(notes, activeFolder) {
 
   const results = useMemo(() => {
     const filtered = filterNotes(notes, activeFolder, query);
-    return sortNotes(filtered, sortOption);
+    const sorted = sortNotes(filtered, sortOption);
+    // Always float pinned notes to the top, preserving sort order within each group
+    const pinned = sorted.filter((n) => n.isPinned);
+    const unpinned = sorted.filter((n) => !n.isPinned);
+    return [...pinned, ...unpinned];
   }, [notes, activeFolder, query, sortOption]);
 
   return { query, setQuery, sortOption, setSortOption, results };

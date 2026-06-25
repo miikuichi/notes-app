@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useRef } from 'react';
+import { Pin } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -109,7 +110,7 @@ function NoteEditor() {
             title={selectedNote.isPinned ? 'Unpin' : 'Pin note'}
             aria-label={selectedNote.isPinned ? 'Unpin note' : 'Pin note'}
           >
-            📌
+            <Pin size={16} strokeWidth={2} />
           </button>
         </div>
       </div>

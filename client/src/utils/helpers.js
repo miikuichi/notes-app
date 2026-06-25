@@ -68,9 +68,7 @@ export function filterNotes(notes, folderId, searchQuery) {
     });
   }
 
-  const pinned = result.filter((n) => n.isPinned);
-  const unpinned = result.filter((n) => !n.isPinned);
-  return [...pinned, ...unpinned];
+  return result;
 }
 
 /**
