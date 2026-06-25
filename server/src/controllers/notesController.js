@@ -3,16 +3,16 @@ const { validateNote, validateFolder } = require('../middleware/validator');
 
 const NotesController = {
   // ─── Notes ──────────────────────────────────────────────────────────────────
-  getAllNotes(req, res, next) {
+  async getAllNotes(req, res, next) {
     try {
       const { folder, search } = req.query;
       let notes;
       if (search) {
-        notes = NotesService.searchNotes(search);
+        notes = await NotesService.searchNotes(search);
       } else if (folder) {
-        notes = NotesService.getNotesByFolder(folder);
+        notes = await NotesService.getNotesByFolder(folder);
       } else {
-        notes = NotesService.getAllNotes();
+        notes = await NotesService.getAllNotes();
       }
       res.json({ success: true, data: notes, count: notes.length });
     } catch (err) {
@@ -20,9 +20,9 @@ const NotesController = {
     }
   },
 
-  getNoteById(req, res, next) {
+  async getNoteById(req, res, next) {
     try {
-      const note = NotesService.getNoteById(req.params.id);
+      const note = await NotesService.getNoteById(req.params.id);
       if (!note)
         return res.status(404).json({ success: false, message: 'Note not found' });
       res.json({ success: true, data: note });
@@ -31,20 +31,20 @@ const NotesController = {
     }
   },
 
-  createNote(req, res, next) {
+  async createNote(req, res, next) {
     try {
       const error = validateNote(req.body);
       if (error) return res.status(400).json({ success: false, message: error });
-      const note = NotesService.createNote(req.body);
+      const note = await NotesService.createNote(req.body);
       res.status(201).json({ success: true, data: note });
     } catch (err) {
       next(err);
     }
   },
 
-  updateNote(req, res, next) {
+  async updateNote(req, res, next) {
     try {
-      const note = NotesService.updateNote(req.params.id, req.body);
+      const note = await NotesService.updateNote(req.params.id, req.body);
       if (!note)
         return res.status(404).json({ success: false, message: 'Note not found' });
       res.json({ success: true, data: note });
@@ -53,9 +53,9 @@ const NotesController = {
     }
   },
 
-  deleteNote(req, res, next) {
+  async deleteNote(req, res, next) {
     try {
-      const deleted = NotesService.deleteNote(req.params.id);
+      const deleted = await NotesService.deleteNote(req.params.id);
       if (!deleted)
         return res.status(404).json({ success: false, message: 'Note not found' });
       res.json({ success: true, message: 'Note deleted successfully' });
@@ -64,9 +64,9 @@ const NotesController = {
     }
   },
 
-  togglePin(req, res, next) {
+  async togglePin(req, res, next) {
     try {
-      const note = NotesService.togglePin(req.params.id);
+      const note = await NotesService.togglePin(req.params.id);
       if (!note)
         return res.status(404).json({ success: false, message: 'Note not found' });
       res.json({ success: true, data: note });
@@ -76,29 +76,29 @@ const NotesController = {
   },
 
   // ─── Folders ────────────────────────────────────────────────────────────────
-  getAllFolders(req, res, next) {
+  async getAllFolders(req, res, next) {
     try {
-      const folders = NotesService.getAllFolders();
+      const folders = await NotesService.getAllFolders();
       res.json({ success: true, data: folders });
     } catch (err) {
       next(err);
     }
   },
 
-  createFolder(req, res, next) {
+  async createFolder(req, res, next) {
     try {
       const error = validateFolder(req.body);
       if (error) return res.status(400).json({ success: false, message: error });
-      const folder = NotesService.createFolder(req.body);
+      const folder = await NotesService.createFolder(req.body);
       res.status(201).json({ success: true, data: folder });
     } catch (err) {
       next(err);
     }
   },
 
-  updateFolder(req, res, next) {
+  async updateFolder(req, res, next) {
     try {
-      const folder = NotesService.updateFolder(req.params.id, req.body);
+      const folder = await NotesService.updateFolder(req.params.id, req.body);
       if (!folder)
         return res
           .status(404)
@@ -109,9 +109,9 @@ const NotesController = {
     }
   },
 
-  deleteFolder(req, res, next) {
+  async deleteFolder(req, res, next) {
     try {
-      const deleted = NotesService.deleteFolder(req.params.id);
+      const deleted = await NotesService.deleteFolder(req.params.id);
       if (!deleted)
         return res
           .status(404)
@@ -124,3 +124,4 @@ const NotesController = {
 };
 
 module.exports = NotesController;
+
