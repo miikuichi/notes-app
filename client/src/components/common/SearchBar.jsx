@@ -16,7 +16,7 @@ function SearchBar({ onSearch, placeholder = 'Search notes…' }) {
 
   return (
     <div className="search-bar">
-      <span className="search-icon" aria-hidden="true">🔍</span>
+      <span className="search-icon" aria-hidden="true"></span>
       <input
         type="search"
         value={value}

@@ -27,8 +27,8 @@ const NotesService = {
     return NoteModel.delete(id);
   },
 
-  togglePin(id) {
-    const note = NoteModel.findById(id);
+  async togglePin(id) {
+    const note = await NoteModel.findById(id);
     if (!note) return null;
     return NoteModel.update(id, { isPinned: !note.isPinned });
   },

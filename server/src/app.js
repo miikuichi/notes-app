@@ -1,10 +1,11 @@
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const notesRoutes = require('./routes/notesRoutes');
 const errorHandler = require('./middleware/errorHandler');
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
